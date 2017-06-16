@@ -1,0 +1,9 @@
+﻿  Matrices49860489.cpp
+d:\ddown\directx-game-master\shooting game\matrices49860489.cpp(362): warning C4100: 'lpCmdLine': 참조되지 않은 정식 매개 변수입니다.
+d:\ddown\directx-game-master\shooting game\matrices49860489.cpp(361): warning C4100: 'hPrevInstance': 참조되지 않은 정식 매개 변수입니다.
+d:\ddown\directx-game-master\shooting game\matrices49860489.cpp(666): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\ddown\directx-game-master\shooting game\matrices49860489.cpp(718): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\ddown\directx-game-master\shooting game\matrices49860489.cpp(751): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\ddown\directx-game-master\shooting game\matrices49860489.cpp(793): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+Matrices49860489.obj : warning LNK4075: '/EDITANDCONTINUE'이(가) '/SAFESEH' 사양으로 인해 무시됩니다.
+  Matrices49860489_2010.vcxproj -> D:\ddown\DirectX-Game-master\Shooting Game\Debug\Matrices49860489.exe
