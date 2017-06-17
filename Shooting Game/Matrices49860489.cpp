@@ -4,6 +4,7 @@
 #include <d3d9.h>
 #include <d3dx9.h>
 #include <iostream>
+#include <stdio.h>
 
 // define the screen resolution and keyboard macros
 #define SCREEN_WIDTH  840
@@ -36,6 +37,9 @@ LPDIRECT3DTEXTURE9 sprite_hero_hit;    // the pointer to the sprite
 LPDIRECT3DTEXTURE9 sprite_enemy;    // the pointer to the sprite
 LPDIRECT3DTEXTURE9 sprite_bullet;    // the pointer to the sprite
 LPDIRECT3DTEXTURE9 sprite_bullet2;
+
+LPDIRECT3DTEXTURE9 back;
+LPDIRECT3DTEXTURE9 back2;
 
 
 									 // function prototypes
@@ -215,7 +219,41 @@ void Enemy::move()
 
 }
 
+typedef struct MISSILE_STRUCT {
 
+	float x, y;
+	float vx, vy;
+	float oldx, oldy;
+	float Angle;
+	float OldAngle;
+	struct MISSILE_STRUCT * Prec;
+
+	bool IsMissile;
+
+
+} MISSILE_TYPE ;
+
+MISSILE_TYPE* NewMissileType();
+
+void ShootMissile(float x, float y, int length)
+{
+	MISSILE_TYPE * missile;
+	MISSILE_TYPE * prec = NULL;
+
+
+	for (int i = 0; i < length; i++, prec = missile)
+	{
+		missile = NewMissileType();
+		missile->x = missile->oldx = x;
+		missile->y = missile->oldy = y;
+		missile->Angle = missile->OldAngle = 0;
+
+		missile->Prec = prec;
+
+		missile->IsMissile = (i == 0);
+
+	}
+}
 
 
 
@@ -345,6 +383,8 @@ void Bullet2::hide()
 	bShow = false;
 
 }
+
+
 
 
 
@@ -576,7 +616,7 @@ void initD3D(HWND hWnd)
 
 
 	D3DXCreateTextureFromFileEx(d3ddev,   
-		L"hero.png",  
+		L"niva_neo_final2.png",  
 		D3DX_DEFAULT,   
 		D3DX_DEFAULT,    
 		D3DX_DEFAULT,    
@@ -650,6 +690,38 @@ void initD3D(HWND hWnd)
 		NULL,    // no image info struct
 		NULL,    // not using 256 colors
 		&sprite_bullet2);    // load to sprite
+
+	////////////////////////////////////
+
+	D3DXCreateTextureFromFileEx(d3ddev,
+		L"back.png",
+		D3DX_DEFAULT,
+		D3DX_DEFAULT,
+		D3DX_DEFAULT,
+		NULL,
+		D3DFMT_A8R8G8B8,
+		D3DPOOL_MANAGED,
+		D3DX_DEFAULT,
+		D3DX_DEFAULT,
+		D3DCOLOR_XRGB(255, 0, 255),
+		NULL,
+		NULL,
+		&back);
+
+	D3DXCreateTextureFromFileEx(d3ddev,
+		L"back2.png",
+		D3DX_DEFAULT,
+		D3DX_DEFAULT,
+		D3DX_DEFAULT,
+		NULL,
+		D3DFMT_A8R8G8B8,
+		D3DPOOL_MANAGED,
+		D3DX_DEFAULT,
+		D3DX_DEFAULT,
+		D3DCOLOR_XRGB(255, 0, 255),
+		NULL,
+		NULL,
+		&back2);
 
 	return;
 }
@@ -727,10 +799,13 @@ void do_game_logic(void)
 	{
 		if (KEY_DOWN(VK_SPACE))
 		{
-			bullet.active();
+			/*bullet.active();
 			bullet2.active();
 			bullet.init(hero.x_pos, hero.y_pos);
-			bullet2.init(hero.x_pos, hero.y_pos+20);
+			bullet2.init(hero.x_pos, hero.y_pos+20);*/
+
+			ShootMissile(hero.x_pos, hero.y_pos, 50);
+
 		}
 	}
 
@@ -841,6 +916,19 @@ void render_frame(void)
 
 	d3dspt->Begin(D3DXSPRITE_ALPHABLEND);    
 
+	RECT part3;
+	SetRect(&part3, 0, 0, 1904, 480);
+	D3DXVECTOR3 center1(0.0f, 0.0f, 0.0f);    // center at the upper-left corner
+	D3DXVECTOR3 position3(0, 0, 0.0f);    // position at 50, 50 with no depth
+	d3dspt->Draw(back, &part3, &center1, &position3, D3DCOLOR_ARGB(255, 255, 255, 255));
+
+	RECT part4;
+	SetRect(&part4, 0, 0, 1904, 480);
+	D3DXVECTOR3 center5(0.0f, 0.0f, 0.0f);    // center at the upper-left corner
+	D3DXVECTOR3 position4(0, 0, 0.0f);    // position at 50, 50 with no depth
+	d3dspt->Draw(back2, &part4, &center1, &position4, D3DCOLOR_ARGB(255, 255, 255, 255));
+
+
 	/////////////////////////////////////스코어//////////////////////////////////////////
 
 	if (score.score0_show == true) // score 0점을 불러온다
@@ -900,7 +988,7 @@ void render_frame(void)
 	if (hero.hit_Show == false)
 	{											 //주인공 
 		RECT part;
-		SetRect(&part, 0, 0, 64, 64);
+		SetRect(&part, 0, 0, 200, 150);
 		D3DXVECTOR3 center(0.0f, 0.0f, 0.0f);    // center at the upper-left corner
 		D3DXVECTOR3 position(hero.x_pos, hero.y_pos, 0.0f);    // position at 50, 50 with no depth
 		d3dspt->Draw(sprite_hero, &part, &center, &position, D3DCOLOR_ARGB(255, 255, 255, 255));
@@ -920,7 +1008,7 @@ void render_frame(void)
 		RECT part1;
 		SetRect(&part1, 0, 0, 64, 64);
 		D3DXVECTOR3 center1(0.0f, 0.0f, 0.0f);    // center at the upper-left corner
-		D3DXVECTOR3 position1(bullet.x_pos, bullet.y_pos, 0.0f);    // position at 50, 50 with no depth
+		D3DXVECTOR3 position1( 0.0f);    // position at 50, 50 with no depth
 		d3dspt->Draw(sprite_bullet, &part1, &center1, &position1, D3DCOLOR_ARGB(255, 255, 255, 255));
 	}
 	if (bullet2.bShow == true)
@@ -943,6 +1031,8 @@ void render_frame(void)
 		d3dspt->Draw(sprite_enemy, &part2, &center2, &position2, D3DCOLOR_ARGB(255, 255, 255, 255));
 	}
 
+	//
+	
 
 
 	d3dspt->End();    // end sprite drawing
@@ -967,6 +1057,9 @@ void cleanD3D(void)
 	sprite_hero_hit->Release();
 	sprite_enemy->Release();
 	sprite_bullet->Release();
+
+	back->Release();
+	back->Release();
 
 	return;
 }
