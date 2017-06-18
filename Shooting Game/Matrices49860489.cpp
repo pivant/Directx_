@@ -219,6 +219,59 @@ void Enemy::move()
 
 }
 
+class Back :public entity {
+
+public:
+	
+	void init(float x, float y);
+	void move();
+	
+
+};
+
+void Back::init(float x, float y)
+{
+
+	x_pos = x;
+	y_pos = y;
+
+}
+
+
+void Back::move()
+{
+	x_pos -= 3;
+
+}
+
+class Back2 :public entity {
+
+public:
+
+	void init(float x, float y);
+	void move();
+
+
+};
+
+void Back2::init(float x, float y)
+{
+
+	x_pos = x;
+	y_pos = y;
+
+}
+
+
+void Back2::move()
+{
+	x_pos -= 3;
+
+}
+
+
+
+
 typedef struct MISSILE_STRUCT {
 
 	float x, y;
@@ -233,27 +286,27 @@ typedef struct MISSILE_STRUCT {
 
 } MISSILE_TYPE ;
 
-MISSILE_TYPE* NewMissileType();
+//MISSILE_TYPE* NewMissileType();
 
-void ShootMissile(float x, float y, int length)
-{
-	MISSILE_TYPE * missile;
-	MISSILE_TYPE * prec = NULL;
-
-
-	for (int i = 0; i < length; i++, prec = missile)
-	{
-		missile = NewMissileType();
-		missile->x = missile->oldx = x;
-		missile->y = missile->oldy = y;
-		missile->Angle = missile->OldAngle = 0;
-
-		missile->Prec = prec;
-
-		missile->IsMissile = (i == 0);
-
-	}
-}
+//void ShootMissile(float x, float y, int length)
+//{
+//	MISSILE_TYPE * missile;
+//	MISSILE_TYPE * prec = NULL;
+//
+//
+//	for (int i = 0; i < length; i++, prec = missile)
+//	{
+//		missile = NewMissileType();
+//		missile->x = missile->oldx = x;
+//		missile->y = missile->oldy = y;
+//		missile->Angle = missile->OldAngle = 0;
+//
+//		missile->Prec = prec;
+//
+//		missile->IsMissile = (i == 0);
+//
+//	}
+//}
 
 
 
@@ -394,6 +447,8 @@ Enemy enemy[ENEMY_NUM];
 Bullet bullet;
 Bullet2 bullet2;
 Score score;
+Back backgr;
+Back backgr2;
 
 
 // the entry point for any Windows program
@@ -732,6 +787,10 @@ void init_game(void)
 	//객체 초기화 
 	hero.init(150.0f, 300.0f);
 	score.init(400.0f, 30.0f);
+
+	backgr.init(0, 0);
+	backgr2.init(1904, 0);
+
 	//적들 초기화 
 	for (int i = 0; i<ENEMY_NUM; i++)
 	{
@@ -792,7 +851,22 @@ void do_game_logic(void)
 			enemy[i].move();
 	}
 
+	backgr.move();
+	backgr2.move();
 
+	if (backgr.x_pos + 1904 < 0)
+		backgr.init(1904, 0);
+
+	if (backgr2.x_pos + 1904 < 0)
+		backgr2.init(1904, 0);
+
+
+
+	
+	
+		
+
+	
 
 	//총알 처리 
 	if (bullet.show() == false && bullet2.show() == false)
@@ -804,7 +878,7 @@ void do_game_logic(void)
 			bullet.init(hero.x_pos, hero.y_pos);
 			bullet2.init(hero.x_pos, hero.y_pos+20);*/
 
-			ShootMissile(hero.x_pos, hero.y_pos, 50);
+			//ShootMissile(hero.x_pos, hero.y_pos, 50);
 
 		}
 	}
@@ -896,19 +970,13 @@ void do_game_logic(void)
 	}
 
 
-
-
-
-	
-
-	
-
 }
 
 
 // this is the function used to render a single frame
 void render_frame(void)
 {
+
 	// clear the window to a deep blue
 	d3ddev->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
 
@@ -918,14 +986,14 @@ void render_frame(void)
 
 	RECT part3;
 	SetRect(&part3, 0, 0, 1904, 480);
-	D3DXVECTOR3 center1(0.0f, 0.0f, 0.0f);    // center at the upper-left corner
-	D3DXVECTOR3 position3(0, 0, 0.0f);    // position at 50, 50 with no depth
+	D3DXVECTOR3 center1(0, 0.0f, 0.0f);    // center at the upper-left corner
+	D3DXVECTOR3 position3(backgr.x_pos, 0, 0.0f);    // position at 50, 50 with no depth
 	d3dspt->Draw(back, &part3, &center1, &position3, D3DCOLOR_ARGB(255, 255, 255, 255));
 
 	RECT part4;
 	SetRect(&part4, 0, 0, 1904, 480);
-	D3DXVECTOR3 center5(0.0f, 0.0f, 0.0f);    // center at the upper-left corner
-	D3DXVECTOR3 position4(0, 0, 0.0f);    // position at 50, 50 with no depth
+	D3DXVECTOR3 center5(0, 0.0f, 0.0f);    // center at the upper-left corner
+	D3DXVECTOR3 position4(backgr2.x_pos, 0, 0.0f);    // position at 50, 50 with no depth
 	d3dspt->Draw(back2, &part4, &center1, &position4, D3DCOLOR_ARGB(255, 255, 255, 255));
 
 
@@ -1008,7 +1076,7 @@ void render_frame(void)
 		RECT part1;
 		SetRect(&part1, 0, 0, 64, 64);
 		D3DXVECTOR3 center1(0.0f, 0.0f, 0.0f);    // center at the upper-left corner
-		D3DXVECTOR3 position1( 0.0f);    // position at 50, 50 with no depth
+		D3DXVECTOR3 position1(0.0f, 0.0f, 0.0f);    // position at 50, 50 with no depth
 		d3dspt->Draw(sprite_bullet, &part1, &center1, &position1, D3DCOLOR_ARGB(255, 255, 255, 255));
 	}
 	if (bullet2.bShow == true)
