@@ -41,6 +41,16 @@ LPDIRECT3DTEXTURE9 sprite_bullet2;
 LPDIRECT3DTEXTURE9 back;
 LPDIRECT3DTEXTURE9 back2;
 
+struct BulletEX
+{
+	BOOL Visible;
+	LPDIRECT3DTEXTURE9 Texture;
+	RECT Source;
+	D3DXVECTOR3 Position;
+	D3DXVECTOR3 Center;
+};
+
+
 
 									 // function prototypes
 void initD3D(HWND hWnd);    // sets up and initializes Direct3D
@@ -311,7 +321,6 @@ typedef struct MISSILE_STRUCT {
 
 
 
-// 총알 클래스 
 class Bullet :public entity {
 
 public:
@@ -332,7 +341,7 @@ bool Bullet::check_collision(float x, float y)
 	//충돌 처리 시 
 	if (sphere_collision_check(x_pos, y_pos, 32.0f, x, y, 32.0f) == true)
 	{
-		hit_count = hit_count+1; // 총알과 적이 충돌할 때마다 충돌횟수를 1씩 증가시킴
+		hit_count = hit_count + 1; // 총알과 적이 충돌할 때마다 충돌횟수를 1씩 증가시킴
 		bShow = false;
 		return true;
 	}
@@ -366,6 +375,7 @@ void Bullet::active()
 void Bullet::move()
 {
 	x_pos += 16;
+	
 }
 
 void Bullet::hide()
@@ -373,6 +383,81 @@ void Bullet::hide()
 	bShow = false;
 
 }
+	
+//	/*float x, float y,*/    // 탄의 좌표
+//	float& vx, float& vy,  // 탄의 속도벡터
+//	float mx, float my,    // 메인 캐릭터의 좌표
+//	float speed,           // 탄의 속도
+//	float theta            // 선회 각도의 상한치
+//	)
+//{
+//	// 탄의 원래 속도벡터를 저장
+//	float vx0 = vx, vy0 = vy;
+//
+//	// 메인 캐릭터 방향으로의 속도 벡터(vx1, vy1)를 구하기
+//	float vx1, vy1;
+//	float d = sqrt((mx - x)*(mx - x) + (my - y)*(my - y));
+//	if (d) {
+//		vx1 = (mx - x) / d*speed;
+//		vy1 = (my - y) / d*speed;
+//	}
+//	else {
+//		vx1 = 0;
+//		vy1 = speed;
+//	}
+//
+//	// 시계방향으로 선회할 때의 상한 각도에 해당하는 속도벡터(vx2, vy2)를 구하기:
+//	// M_PI는 원주율
+//	float rad = 3.14f / 180 * theta;
+//	float vx2 = cos(rad)*vx0 - sin(rad)*vy0;
+//	float vy2 = sin(rad)*vx0 + cos(rad)*vy0;
+//
+//	// 메인 캐릭터 방향으로 선회할 지 제한각도만큼만 선회할 지 정하기
+//	if (vx0*vx1 + vy0*vy1 >= vx0*vx2 + vy0*vy2) {
+//
+//		// 메인 캐릭터가 선회 가능한 범위 내에 있을 경우:
+//		// 메인 캐릭터 방향으로 선회함
+//		vx = vx1;
+//		vy = vy1;
+//
+//	}
+//	else {
+//
+//		// 메인 캐릭터가 선회 가능한 범위 밖에 있을 경우:
+//		// 시계 반대방향으로 선회할 때의 상한 각도에 해당하는 속도벡터(vx3, vy3)를 구하기
+//		float vx3 = cos(rad)*vx0 + sin(rad)*vy0;
+//		float vy3 = -sin(rad)*vx0 + cos(rad)*vy0;
+//
+//		// 탄에서 메인 캐릭터까지의 상대위치벡터(px, py)를 구하기
+//		float px = mx - x, py = my - y;
+//
+//		// 시계방향으로 선회할 지 시계 반대방향으로 선회할 지 정하기
+//		if (px*vx2 + py*vy2 >= px*vx3 + py*vy3) {
+//
+//			// 시계방향일 경우
+//			vx = vx2;
+//			vy = vy2;
+//
+//		}
+//		else {
+//
+//			// 시계 반대방향일 경우
+//			vx = vx3;
+//			vy = vy3;
+//
+//		}
+//	}
+//
+//	// 탄의 좌표(x, y)를 갱신하여 탄을 이동시킴
+//	x_pos += vx;
+//	y_pos += vy;
+
+
+
+
+
+
+
 
 class Bullet2 :public entity {
 
@@ -428,7 +513,6 @@ void Bullet2::active()
 void Bullet2::move()
 {
 	x_pos += 16;
-	y_pos -= 10;
 }
 
 void Bullet2::hide()
@@ -446,6 +530,7 @@ Hero hero;
 Enemy enemy[ENEMY_NUM];
 Bullet bullet;
 Bullet2 bullet2;
+Bullet bulletex[100];
 Score score;
 Back backgr;
 Back backgr2;
@@ -800,6 +885,11 @@ void init_game(void)
 	//총알 초기화 
 	bullet.init(hero.x_pos, hero.y_pos);
 	bullet2.init(hero.x_pos, hero.y_pos);
+
+	for (int i = 0; i < 100; i++)
+	{
+		bulletex[i].init(hero.x_pos, hero.y_pos);
+	}
 }
 
 
@@ -862,24 +952,43 @@ void do_game_logic(void)
 
 
 
-	
-	
-		
-
-	
-
 	//총알 처리 
-	if (bullet.show() == false && bullet2.show() == false)
+
+	//for (int i = 0; i < 100; i++) {
+
+	//	if (bullet.show() == false && bullet2.show() == false)
+	//	{
+	//		if (KEY_DOWN(VK_SPACE))
+	//		{
+	//			bullet.active();
+	//			bullet2.active();
+	//			bullet.init(hero.x_pos, hero.y_pos);
+	//			bullet2.init(hero.x_pos, hero.y_pos + 20);
+
+
+	//			
+	//				bulletex[i].active();
+	//				bulletex[i].init(hero.x_pos, hero.y_pos);
+	//				break;
+	//			
+
+	//			//ShootMissile(hero.x_pos, hero.y_pos, 50);
+
+	//		}
+	//	}
+	//}
+
+	if (GetKeyState(0x5a) & 0x80000000)
 	{
-		if (KEY_DOWN(VK_SPACE))
+		for (INT i = 0; i<100; ++i)
 		{
-			/*bullet.active();
-			bullet2.active();
-			bullet.init(hero.x_pos, hero.y_pos);
-			bullet2.init(hero.x_pos, hero.y_pos+20);*/
-
-			//ShootMissile(hero.x_pos, hero.y_pos, 50);
-
+			if (bulletex[i].bShow == FALSE)
+			{
+				bulletex[i].active();
+				bulletex[i].init(hero.x_pos, hero.y_pos);
+				bulletex[i].move();
+				break;
+			}
 		}
 	}
 
@@ -890,6 +999,22 @@ void do_game_logic(void)
 			bullet.hide();
 		else
 			bullet.move();
+	}
+
+	for (int i = 0; i < 100; i++)
+		{
+			if (bulletex[i].show() == true)
+			{
+				if (bulletex[i].x_pos > SCREEN_WIDTH)
+					bulletex[i].hide();
+				    
+				else
+					bulletex[i].move();
+					
+			}
+
+			
+		}
 
 
 		//충돌 처리(충돌한 횟수 체크해서 스코어 계산)
@@ -925,50 +1050,14 @@ void do_game_logic(void)
 				}
 			}
 		}
-	}
-	if (bullet2.show() == true)
-	{
-		if (bullet2.x_pos > SCREEN_WIDTH)
-			bullet2.hide();
-		else
-			bullet2.move();
-
-
-		//충돌 처리(충돌한 횟수 체크해서 스코어 계산)
-		for (int i = 0; i < ENEMY_NUM; i++)
-		{
-			if (bullet2.check_collision(enemy[i].x_pos, enemy[i].y_pos) == true)
+		
+			if (bullet2.show() == true)
 			{
-				enemy[i].init((float)(SCREEN_WIDTH + (rand() % 300)), rand() % SCREEN_HEIGHT);
-				if (bullet2.hit_count == 1) // 충돌 횟수 1회시
-				{
-					score.score0_show = false;
-					score.score1_show = true;
-				}
-				if (bullet2.hit_count == 2) // 충돌 횟수 2회시
-				{
-					score.score1_show = false;
-					score.score2_show = true;
-				}
-				if (bullet2.hit_count == 3)
-				{
-					score.score2_show = false;
-					score.score3_show = true;
-				}
-				if (bullet2.hit_count == 4)
-				{
-					score.score3_show = false;
-					score.score4_show = true;
-				}
-				if (bullet2.hit_count == 5) // 충
-				{
-					score.score4_show = false;
-					score.score5_show = true;
-				}
+				if (bullet2.x_pos > SCREEN_WIDTH)
+					bullet2.hide();
+				else
+					bullet2.move();
 			}
-		}
-	}
-
 
 }
 
@@ -1052,6 +1141,7 @@ void render_frame(void)
 		D3DXVECTOR3 Sposition(score.x_pos, score.y_pos, 0.0f);
 		d3dspt->Draw(sprite_score5, &Spart, &Scenter, &Sposition, D3DCOLOR_ARGB(255, 255, 255, 255));
 	}
+
 	/////////////////////////////////////스코어끝/////////////////////////////////////////
 	if (hero.hit_Show == false)
 	{											 //주인공 
@@ -1076,7 +1166,7 @@ void render_frame(void)
 		RECT part1;
 		SetRect(&part1, 0, 0, 64, 64);
 		D3DXVECTOR3 center1(0.0f, 0.0f, 0.0f);    // center at the upper-left corner
-		D3DXVECTOR3 position1(0.0f, 0.0f, 0.0f);    // position at 50, 50 with no depth
+		D3DXVECTOR3 position1(bullet.x_pos, bullet.y_pos, 0.0f);    // position at 50, 50 with no depth
 		d3dspt->Draw(sprite_bullet, &part1, &center1, &position1, D3DCOLOR_ARGB(255, 255, 255, 255));
 	}
 	if (bullet2.bShow == true)
@@ -1087,6 +1177,20 @@ void render_frame(void)
 		D3DXVECTOR3 position1(bullet2.x_pos, bullet2.y_pos, 0.0f);    // position at 50, 50 with no depth
 		d3dspt->Draw(sprite_bullet2, &part1, &center1, &position1, D3DCOLOR_ARGB(255, 255, 255, 255));
 	}
+
+	for (int i = 0; i < 100; i++)
+	{
+			if (bulletex[i].bShow == true)
+			{
+		
+				RECT part6;
+				SetRect(&part6, 0, 0, 64, 64);
+				D3DXVECTOR3 center6(0.0f, 0.0f, 0.0f);    // center at the upper-left corner
+				D3DXVECTOR3 position6(bulletex[i].x_pos, bulletex[i].y_pos, 0.0f);    // position at 50, 50 with no depth
+				d3dspt->Draw(sprite_bullet, &part6, &center6, &position6, D3DCOLOR_ARGB(255, 255, 255, 255));
+			}
+	}
+	
 
 	////에네미 
 	RECT part2;
@@ -1100,6 +1204,8 @@ void render_frame(void)
 	}
 
 	//
+
+	
 	
 
 

@@ -1,12 +1,11 @@
 ﻿  Matrices49860489.cpp
-d:\ddown\dx_game\shooting game\matrices49860489.cpp(457): warning C4100: 'lpCmdLine': 참조되지 않은 정식 매개 변수입니다.
-d:\ddown\dx_game\shooting game\matrices49860489.cpp(456): warning C4100: 'hPrevInstance': 참조되지 않은 정식 매개 변수입니다.
-d:\ddown\dx_game\shooting game\matrices49860489.cpp(797): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-d:\ddown\dx_game\shooting game\matrices49860489.cpp(849): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-d:\ddown\dx_game\shooting game\matrices49860489.cpp(900): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-d:\ddown\dx_game\shooting game\matrices49860489.cpp(942): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-d:\ddown\dx_game\shooting game\matrices49860489.cpp(1078): warning C4456: 'center1' 선언은 이전 로컬 선언을 숨깁니다.
-  d:\ddown\dx_game\shooting game\matrices49860489.cpp(989): note: 'center1' 선언을 참조하십시오.
-d:\ddown\dx_game\shooting game\matrices49860489.cpp(1086): warning C4456: 'center1' 선언은 이전 로컬 선언을 숨깁니다.
-  d:\ddown\dx_game\shooting game\matrices49860489.cpp(989): note: 'center1' 선언을 참조하십시오.
+d:\ddown\dx_game\shooting game\matrices49860489.cpp(542): warning C4100: 'lpCmdLine': 참조되지 않은 정식 매개 변수입니다.
+d:\ddown\dx_game\shooting game\matrices49860489.cpp(541): warning C4100: 'hPrevInstance': 참조되지 않은 정식 매개 변수입니다.
+d:\ddown\dx_game\shooting game\matrices49860489.cpp(882): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\ddown\dx_game\shooting game\matrices49860489.cpp(939): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\ddown\dx_game\shooting game\matrices49860489.cpp(1025): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\ddown\dx_game\shooting game\matrices49860489.cpp(1168): warning C4456: 'center1' 선언은 이전 로컬 선언을 숨깁니다.
+  d:\ddown\dx_game\shooting game\matrices49860489.cpp(1078): note: 'center1' 선언을 참조하십시오.
+d:\ddown\dx_game\shooting game\matrices49860489.cpp(1176): warning C4456: 'center1' 선언은 이전 로컬 선언을 숨깁니다.
+  d:\ddown\dx_game\shooting game\matrices49860489.cpp(1078): note: 'center1' 선언을 참조하십시오.
   Matrices49860489_2010.vcxproj -> D:\ddown\DX_GAME\Shooting Game\Debug\Matrices49860489.exe
