@@ -11,6 +11,7 @@
 #define SCREEN_HEIGHT 480
 #define KEY_DOWN(vk_code) ((GetAsyncKeyState(vk_code) & 0x8000) ? 1 : 0)
 #define KEY_UP(vk_code) ((GetAsyncKeyState(vk_code) & 0x8000) ? 0 : 1)
+#define RELOAD 30;
 
 #define ENEMY_NUM 10 
 
@@ -40,6 +41,8 @@ LPDIRECT3DTEXTURE9 sprite_bullet2;
 
 LPDIRECT3DTEXTURE9 back;
 LPDIRECT3DTEXTURE9 back2;
+
+LPD3DXFONT font;
 
 struct BulletEX
 {
@@ -534,6 +537,16 @@ Bullet bulletex[100];
 Score score;
 Back backgr;
 Back backgr2;
+LPD3DXFONT FONT2;
+
+
+
+
+int reload;
+int reload_count;
+bool reload_flag;
+
+
 
 
 // the entry point for any Windows program
@@ -552,11 +565,11 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	wc.lpfnWndProc = (WNDPROC)WindowProc;
 	wc.hInstance = hInstance;
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.lpszClassName = L"WindowClass";
+	wc.lpszClassName = "WindowClass";
 
 	RegisterClassEx(&wc);
 
-	hWnd = CreateWindowEx(NULL, L"WindowClass", L"Our Direct3D Program",
+	hWnd = CreateWindowEx(NULL, "WindowClass", "Our Direct3D Program",
 		WS_EX_DLGMODALFRAME | WS_BORDER, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT,
 		NULL, NULL, hInstance, NULL);
 
@@ -648,7 +661,7 @@ void initD3D(HWND hWnd)
 
 
 	D3DXCreateTextureFromFileEx(d3ddev,    // the device pointer
-		L"Panel3.png",    // the file name
+		"Panel3.png",    // the file name
 		D3DX_DEFAULT,    // default width
 		D3DX_DEFAULT,    // default height
 		D3DX_DEFAULT,    // no mip mapping
@@ -664,7 +677,7 @@ void initD3D(HWND hWnd)
 
 	//////////////////////////////////////////////////////////////////////////////
 	D3DXCreateTextureFromFileEx(d3ddev,
-		L"score0.png",
+		"score0.png",
 		D3DX_DEFAULT,
 		D3DX_DEFAULT,
 		D3DX_DEFAULT,
@@ -679,7 +692,7 @@ void initD3D(HWND hWnd)
 		&sprite_score0);
 
 	D3DXCreateTextureFromFileEx(d3ddev,
-		L"score1.png",
+		"score1.png",
 		D3DX_DEFAULT,
 		D3DX_DEFAULT,
 		D3DX_DEFAULT,
@@ -694,7 +707,7 @@ void initD3D(HWND hWnd)
 		&sprite_score1);
 
 	D3DXCreateTextureFromFileEx(d3ddev,
-		L"score2.png",
+		"score2.png",
 		D3DX_DEFAULT,
 		D3DX_DEFAULT,
 		D3DX_DEFAULT,
@@ -709,7 +722,7 @@ void initD3D(HWND hWnd)
 		&sprite_score2);
 
 	D3DXCreateTextureFromFileEx(d3ddev,
-		L"score3.png",
+		"score3.png",
 		D3DX_DEFAULT,
 		D3DX_DEFAULT,
 		D3DX_DEFAULT,
@@ -724,7 +737,7 @@ void initD3D(HWND hWnd)
 		&sprite_score3);
 
 	D3DXCreateTextureFromFileEx(d3ddev,
-		L"score4.png",
+		"score4.png",
 		D3DX_DEFAULT,
 		D3DX_DEFAULT,
 		D3DX_DEFAULT,
@@ -739,7 +752,7 @@ void initD3D(HWND hWnd)
 		&sprite_score4);
 
 	D3DXCreateTextureFromFileEx(d3ddev,
-		L"score5.png",
+		"score5.png",
 		D3DX_DEFAULT,
 		D3DX_DEFAULT,
 		D3DX_DEFAULT,
@@ -756,7 +769,7 @@ void initD3D(HWND hWnd)
 
 
 	D3DXCreateTextureFromFileEx(d3ddev,   
-		L"niva_neo_final2.png",  
+		"niva_neo_final2.png",  
 		D3DX_DEFAULT,   
 		D3DX_DEFAULT,    
 		D3DX_DEFAULT,    
@@ -771,7 +784,7 @@ void initD3D(HWND hWnd)
 		&sprite_hero);   
 
 	D3DXCreateTextureFromFileEx(d3ddev,    // the device pointer
-		L"hero_hit.png",    // the file name
+		"hero_hit.png",    // the file name
 		D3DX_DEFAULT,    // default width
 		D3DX_DEFAULT,    // default height
 		D3DX_DEFAULT,    // no mip mapping
@@ -786,7 +799,7 @@ void initD3D(HWND hWnd)
 		&sprite_hero_hit);    // load to sprite
 
 	D3DXCreateTextureFromFileEx(d3ddev,    // the device pointer
-		L"enemy.png",    // the file name
+		"enemy.png",    // the file name
 		D3DX_DEFAULT,    // default width
 		D3DX_DEFAULT,    // default height
 		D3DX_DEFAULT,    // no mip mapping
@@ -802,7 +815,7 @@ void initD3D(HWND hWnd)
 
 
 	D3DXCreateTextureFromFileEx(d3ddev,    // the device pointer
-		L"bullet.png",    // the file name
+		"bullet.png",    // the file name
 		D3DX_DEFAULT,    // default width
 		D3DX_DEFAULT,    // default height
 		D3DX_DEFAULT,    // no mip mapping
@@ -817,7 +830,7 @@ void initD3D(HWND hWnd)
 		&sprite_bullet);    // load to sprite
 
 	D3DXCreateTextureFromFileEx(d3ddev,    // the device pointer
-		L"bullet.png",    // the file name
+		"bullet.png",    // the file name
 		D3DX_DEFAULT,    // default width
 		D3DX_DEFAULT,    // default height
 		D3DX_DEFAULT,    // no mip mapping
@@ -834,7 +847,7 @@ void initD3D(HWND hWnd)
 	////////////////////////////////////
 
 	D3DXCreateTextureFromFileEx(d3ddev,
-		L"back.png",
+		"back.png",
 		D3DX_DEFAULT,
 		D3DX_DEFAULT,
 		D3DX_DEFAULT,
@@ -849,7 +862,7 @@ void initD3D(HWND hWnd)
 		&back);
 
 	D3DXCreateTextureFromFileEx(d3ddev,
-		L"back2.png",
+		"back2.png",
 		D3DX_DEFAULT,
 		D3DX_DEFAULT,
 		D3DX_DEFAULT,
@@ -875,6 +888,41 @@ void init_game(void)
 
 	backgr.init(0, 0);
 	backgr2.init(1904, 0);
+
+	reload_count = 0;
+	reload_flag = true;
+
+	/*D3DXCreateFont(d3ddev, 20, 0, FW_NORMAL, 1, FALSE, DEFAULT_CHARSET, 
+		OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE,
+		"Arial", &font);*/
+
+	
+
+	D3DXCreateFont(d3ddev,     //D3D Device
+
+		20,               //Font height
+
+		0,                //Font width
+
+		FW_NORMAL,        //Font Weight
+
+		1,                //MipLevels
+
+		false,            //Italic
+
+		DEFAULT_CHARSET,  //CharSet
+
+		OUT_DEFAULT_PRECIS, //OutputPrecision
+
+		ANTIALIASED_QUALITY, //Quality
+
+		DEFAULT_PITCH | FF_DONTCARE,//PitchAndFamily
+
+		"System",          //pFacename,
+
+		&FONT2);         //ppFont
+
+	
 
 	//적들 초기화 
 	for (int i = 0; i<ENEMY_NUM; i++)
@@ -954,52 +1002,40 @@ void do_game_logic(void)
 
 	//총알 처리 
 
-	//for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < 100; i++) {
 
-	//	if (bullet.show() == false && bullet2.show() == false)
-	//	{
-	//		if (KEY_DOWN(VK_SPACE))
-	//		{
-	//			bullet.active();
-	//			bullet2.active();
-	//			bullet.init(hero.x_pos, hero.y_pos);
-	//			bullet2.init(hero.x_pos, hero.y_pos + 20);
-
-
-	//			
-	//				bulletex[i].active();
-	//				bulletex[i].init(hero.x_pos, hero.y_pos);
-	//				break;
-	//			
-
-	//			//ShootMissile(hero.x_pos, hero.y_pos, 50);
-
-	//		}
-	//	}
-	//}
+		if (bullet.show() == false && bullet2.show() == false)
+		{
+			if (KEY_DOWN(VK_SPACE))
+			{
+				reload_count = 0;
+				reload_flag = true;
+			}
+		}
+	}
 
 	if (GetKeyState(0x5a) & 0x80000000)
 	{
 		for (INT i = 0; i<100; ++i)
 		{
-			if (bulletex[i].bShow == FALSE)
+			if (bulletex[i].bShow == FALSE && reload_flag == true)
 			{
 				bulletex[i].active();
 				bulletex[i].init(hero.x_pos, hero.y_pos);
-				bulletex[i].move();
+				reload_count++;
+
+				if(reload_count >= 30)
+				{
+					reload_flag = false;
+				}
+
+				//bulletex[i].move();
 				break;
 			}
 		}
 	}
 
 
-	if (bullet.show() == true)
-	{
-		if (bullet.x_pos > SCREEN_WIDTH)
-			bullet.hide();
-		else
-			bullet.move();
-	}
 
 	for (int i = 0; i < 100; i++)
 		{
@@ -1007,57 +1043,24 @@ void do_game_logic(void)
 			{
 				if (bulletex[i].x_pos > SCREEN_WIDTH)
 					bulletex[i].hide();
-				    
 				else
-					bulletex[i].move();
-					
+					bulletex[i].move();	
 			}
 
 			
 		}
 
 
-		//충돌 처리(충돌한 횟수 체크해서 스코어 계산)
+		//충돌 처리
 		for (int i = 0; i < ENEMY_NUM; i++)
 		{
 			if (bullet.check_collision(enemy[i].x_pos, enemy[i].y_pos) == true)
 			{
 				enemy[i].init((float)(SCREEN_WIDTH + (rand() % 300)), rand() % SCREEN_HEIGHT);
-				if (bullet.hit_count == 1) // 충돌 횟수 1회시
-				{
-					score.score0_show = false;
-					score.score1_show = true;
-				}
-				if (bullet.hit_count == 2) // 충돌 횟수 2회시
-				{
-					score.score1_show = false;
-					score.score2_show = true;
-				}
-				if (bullet.hit_count == 3) 
-				{
-					score.score2_show = false;
-					score.score3_show = true;
-				}
-				if (bullet.hit_count == 4)
-				{
-					score.score3_show = false;
-					score.score4_show = true;
-				}
-				if (bullet.hit_count == 5) // 충
-				{
-					score.score4_show = false;
-					score.score5_show = true;
-				}
 			}
 		}
 		
-			if (bullet2.show() == true)
-			{
-				if (bullet2.x_pos > SCREEN_WIDTH)
-					bullet2.hide();
-				else
-					bullet2.move();
-			}
+		
 
 }
 
@@ -1071,7 +1074,14 @@ void render_frame(void)
 
 	d3ddev->BeginScene();    // begins the 3D scene
 
-	d3dspt->Begin(D3DXSPRITE_ALPHABLEND);    
+	d3dspt->Begin(D3DXSPRITE_ALPHABLEND);  
+
+	char string[100];
+	RECT TextRt;
+	SetRect(&TextRt, 0, 0, 800, 600);
+	sprintf(string, " 장탄수   %d / 30  ", 30 - reload_count);
+	FONT2->DrawText(NULL, string, -1, &TextRt, DT_LEFT|DT_NOCLIP, 0xFFFFFFFF);
+	
 
 	RECT part3;
 	SetRect(&part3, 0, 0, 1904, 480);
@@ -1079,70 +1089,15 @@ void render_frame(void)
 	D3DXVECTOR3 position3(backgr.x_pos, 0, 0.0f);    // position at 50, 50 with no depth
 	d3dspt->Draw(back, &part3, &center1, &position3, D3DCOLOR_ARGB(255, 255, 255, 255));
 
+
 	RECT part4;
 	SetRect(&part4, 0, 0, 1904, 480);
 	D3DXVECTOR3 center5(0, 0.0f, 0.0f);    // center at the upper-left corner
 	D3DXVECTOR3 position4(backgr2.x_pos, 0, 0.0f);    // position at 50, 50 with no depth
 	d3dspt->Draw(back2, &part4, &center1, &position4, D3DCOLOR_ARGB(255, 255, 255, 255));
 
+	
 
-	/////////////////////////////////////스코어//////////////////////////////////////////
-
-	if (score.score0_show == true) // score 0점을 불러온다
-	{
-		RECT Spart;
-		SetRect(&Spart, 0, 0, 176, 54);
-		D3DXVECTOR3 Scenter(0.0f, 0.0f, 0.0f);
-		D3DXVECTOR3 Sposition(score.x_pos, score.y_pos, 0.0f);
-		d3dspt->Draw(sprite_score0, &Spart, &Scenter, &Sposition, D3DCOLOR_ARGB(255, 255, 255, 255));
-	}
-
-	if (score.score1_show == true) // score 1점을 불러온다
-	{
-		RECT Spart;
-		SetRect(&Spart, 0, 0, 176, 54);
-		D3DXVECTOR3 Scenter(0.0f, 0.0f, 0.0f);
-		D3DXVECTOR3 Sposition(score.x_pos, score.y_pos, 0.0f);
-		d3dspt->Draw(sprite_score1, &Spart, &Scenter, &Sposition, D3DCOLOR_ARGB(255, 255, 255, 255));
-	}
-
-	if (score.score2_show == true)
-	{
-		RECT Spart;
-		SetRect(&Spart, 0, 0, 176, 54);
-		D3DXVECTOR3 Scenter(0.0f, 0.0f, 0.0f);
-		D3DXVECTOR3 Sposition(score.x_pos, score.y_pos, 0.0f);
-		d3dspt->Draw(sprite_score2, &Spart, &Scenter, &Sposition, D3DCOLOR_ARGB(255, 255, 255, 255));
-	}
-
-	if (score.score3_show == true)
-	{
-		RECT Spart;
-		SetRect(&Spart, 0, 0, 176, 54);
-		D3DXVECTOR3 Scenter(0.0f, 0.0f, 0.0f);
-		D3DXVECTOR3 Sposition(score.x_pos, score.y_pos, 0.0f);
-		d3dspt->Draw(sprite_score3, &Spart, &Scenter, &Sposition, D3DCOLOR_ARGB(255, 255, 255, 255));
-	}
-
-	if (score.score4_show == true)
-	{
-		RECT Spart;
-		SetRect(&Spart, 0, 0, 176, 54);
-		D3DXVECTOR3 Scenter(0.0f, 0.0f, 0.0f);
-		D3DXVECTOR3 Sposition(score.x_pos, score.y_pos, 0.0f);
-		d3dspt->Draw(sprite_score4, &Spart, &Scenter, &Sposition, D3DCOLOR_ARGB(255, 255, 255, 255));
-	}
-		
-	if (score.score5_show == true)
-	{
-		RECT Spart;
-		SetRect(&Spart, 0, 0, 176, 54);
-		D3DXVECTOR3 Scenter(0.0f, 0.0f, 0.0f);
-		D3DXVECTOR3 Sposition(score.x_pos, score.y_pos, 0.0f);
-		d3dspt->Draw(sprite_score5, &Spart, &Scenter, &Sposition, D3DCOLOR_ARGB(255, 255, 255, 255));
-	}
-
-	/////////////////////////////////////스코어끝/////////////////////////////////////////
 	if (hero.hit_Show == false)
 	{											 //주인공 
 		RECT part;
@@ -1161,30 +1116,13 @@ void render_frame(void)
 		d3dspt->Draw(sprite_hero_hit, &part_1, &center_1, &position_1, D3DCOLOR_ARGB(255, 255, 255, 255));
 	}
 	////총알 
-	if (bullet.bShow == true)
-	{
-		RECT part1;
-		SetRect(&part1, 0, 0, 64, 64);
-		D3DXVECTOR3 center1(0.0f, 0.0f, 0.0f);    // center at the upper-left corner
-		D3DXVECTOR3 position1(bullet.x_pos, bullet.y_pos, 0.0f);    // position at 50, 50 with no depth
-		d3dspt->Draw(sprite_bullet, &part1, &center1, &position1, D3DCOLOR_ARGB(255, 255, 255, 255));
-	}
-	if (bullet2.bShow == true)
-	{
-		RECT part1;
-		SetRect(&part1, 0, 0, 64, 64);
-		D3DXVECTOR3 center1(0.0f, 0.0f, 0.0f);    // center at the upper-left corner
-		D3DXVECTOR3 position1(bullet2.x_pos, bullet2.y_pos, 0.0f);    // position at 50, 50 with no depth
-		d3dspt->Draw(sprite_bullet2, &part1, &center1, &position1, D3DCOLOR_ARGB(255, 255, 255, 255));
-	}
-
+	
 	for (int i = 0; i < 100; i++)
 	{
 			if (bulletex[i].bShow == true)
 			{
-		
 				RECT part6;
-				SetRect(&part6, 0, 0, 64, 64);
+				SetRect(&part6, 0, 0, 120, 70);
 				D3DXVECTOR3 center6(0.0f, 0.0f, 0.0f);    // center at the upper-left corner
 				D3DXVECTOR3 position6(bulletex[i].x_pos, bulletex[i].y_pos, 0.0f);    // position at 50, 50 with no depth
 				d3dspt->Draw(sprite_bullet, &part6, &center6, &position6, D3DCOLOR_ARGB(255, 255, 255, 255));
@@ -1234,6 +1172,8 @@ void cleanD3D(void)
 
 	back->Release();
 	back->Release();
+
+	FONT2->Release();
 
 	return;
 }
