@@ -900,7 +900,7 @@ void init_game(void)
 
 	D3DXCreateFont(d3ddev,     //D3D Device
 
-		20,               //Font height
+		60,               //Font height
 
 		0,                //Font width
 
@@ -934,9 +934,9 @@ void init_game(void)
 	bullet.init(hero.x_pos, hero.y_pos);
 	bullet2.init(hero.x_pos, hero.y_pos);
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 30; i++)
 	{
-		bulletex[i].init(hero.x_pos, hero.y_pos);
+		bulletex[i].init(hero.x_pos+50, hero.y_pos-10);
 	}
 }
 
@@ -1002,7 +1002,7 @@ void do_game_logic(void)
 
 	//ÃÑ¾Ë Ã³¸® 
 
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < 30; i++) {
 
 		if (bullet.show() == false && bullet2.show() == false)
 		{
@@ -1016,12 +1016,12 @@ void do_game_logic(void)
 
 	if (GetKeyState(0x5a) & 0x80000000)
 	{
-		for (INT i = 0; i<100; ++i)
+		for (INT i = 0; i<30; ++i)
 		{
 			if (bulletex[i].bShow == FALSE && reload_flag == true)
 			{
 				bulletex[i].active();
-				bulletex[i].init(hero.x_pos, hero.y_pos);
+				bulletex[i].init(hero.x_pos+100, hero.y_pos+35);
 				reload_count++;
 
 				if(reload_count >= 30)
@@ -1037,7 +1037,7 @@ void do_game_logic(void)
 
 
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 30; i++)
 		{
 			if (bulletex[i].show() == true)
 			{
@@ -1117,12 +1117,12 @@ void render_frame(void)
 	}
 	////ÃÑ¾Ë 
 	
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 30; i++)
 	{
 			if (bulletex[i].bShow == true)
 			{
 				RECT part6;
-				SetRect(&part6, 0, 0, 120, 70);
+				SetRect(&part6, 0, 0, 40, 15);
 				D3DXVECTOR3 center6(0.0f, 0.0f, 0.0f);    // center at the upper-left corner
 				D3DXVECTOR3 position6(bulletex[i].x_pos, bulletex[i].y_pos, 0.0f);    // position at 50, 50 with no depth
 				d3dspt->Draw(sprite_bullet, &part6, &center6, &position6, D3DCOLOR_ARGB(255, 255, 255, 255));
