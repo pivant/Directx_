@@ -38,6 +38,9 @@ LPDIRECT3DTEXTURE9 sprite_hero_hit;    // the pointer to the sprite
 LPDIRECT3DTEXTURE9 sprite_enemy;    // the pointer to the sprite
 LPDIRECT3DTEXTURE9 sprite_bullet;    // the pointer to the sprite
 LPDIRECT3DTEXTURE9 sprite_bullet2;
+PDIRECT3DTEXTURE9 sprite_boss;
+
+
 
 LPDIRECT3DTEXTURE9 back;
 LPDIRECT3DTEXTURE9 back2;
@@ -253,7 +256,7 @@ void Back::init(float x, float y)
 
 void Back::move()
 {
-	x_pos -= 3;
+	x_pos -= 15;
 
 }
 
@@ -278,7 +281,7 @@ void Back2::init(float x, float y)
 
 void Back2::move()
 {
-	x_pos -= 3;
+	x_pos -= 15;
 
 }
 
@@ -335,6 +338,11 @@ public:
 	bool show();
 	void hide();
 	void active();
+	void homing(float x, float y,  // 탄의 좌표
+		float& vx, float& vy,  // 탄의 속도벡터
+		float mx, float my,    // 메인 캐릭터의 좌표
+		float speed,           // 탄의 속도
+		float theta);
 	bool check_collision(float x, float y);
 
 };
@@ -386,74 +394,76 @@ void Bullet::hide()
 	bShow = false;
 
 }
-	
-//	/*float x, float y,*/    // 탄의 좌표
-//	float& vx, float& vy,  // 탄의 속도벡터
-//	float mx, float my,    // 메인 캐릭터의 좌표
-//	float speed,           // 탄의 속도
-//	float theta            // 선회 각도의 상한치
-//	)
-//{
-//	// 탄의 원래 속도벡터를 저장
-//	float vx0 = vx, vy0 = vy;
-//
-//	// 메인 캐릭터 방향으로의 속도 벡터(vx1, vy1)를 구하기
-//	float vx1, vy1;
-//	float d = sqrt((mx - x)*(mx - x) + (my - y)*(my - y));
-//	if (d) {
-//		vx1 = (mx - x) / d*speed;
-//		vy1 = (my - y) / d*speed;
-//	}
-//	else {
-//		vx1 = 0;
-//		vy1 = speed;
-//	}
-//
-//	// 시계방향으로 선회할 때의 상한 각도에 해당하는 속도벡터(vx2, vy2)를 구하기:
-//	// M_PI는 원주율
-//	float rad = 3.14f / 180 * theta;
-//	float vx2 = cos(rad)*vx0 - sin(rad)*vy0;
-//	float vy2 = sin(rad)*vx0 + cos(rad)*vy0;
-//
-//	// 메인 캐릭터 방향으로 선회할 지 제한각도만큼만 선회할 지 정하기
-//	if (vx0*vx1 + vy0*vy1 >= vx0*vx2 + vy0*vy2) {
-//
-//		// 메인 캐릭터가 선회 가능한 범위 내에 있을 경우:
-//		// 메인 캐릭터 방향으로 선회함
-//		vx = vx1;
-//		vy = vy1;
-//
-//	}
-//	else {
-//
-//		// 메인 캐릭터가 선회 가능한 범위 밖에 있을 경우:
-//		// 시계 반대방향으로 선회할 때의 상한 각도에 해당하는 속도벡터(vx3, vy3)를 구하기
-//		float vx3 = cos(rad)*vx0 + sin(rad)*vy0;
-//		float vy3 = -sin(rad)*vx0 + cos(rad)*vy0;
-//
-//		// 탄에서 메인 캐릭터까지의 상대위치벡터(px, py)를 구하기
-//		float px = mx - x, py = my - y;
-//
-//		// 시계방향으로 선회할 지 시계 반대방향으로 선회할 지 정하기
-//		if (px*vx2 + py*vy2 >= px*vx3 + py*vy3) {
-//
-//			// 시계방향일 경우
-//			vx = vx2;
-//			vy = vy2;
-//
-//		}
-//		else {
-//
-//			// 시계 반대방향일 경우
-//			vx = vx3;
-//			vy = vy3;
-//
-//		}
-//	}
-//
-//	// 탄의 좌표(x, y)를 갱신하여 탄을 이동시킴
-//	x_pos += vx;
-//	y_pos += vy;
+
+void Bullet :: homing
+	(float x, float y,  // 탄의 좌표
+	float& vx, float& vy,  // 탄의 속도벡터
+	float mx, float my,    // 메인 캐릭터의 좌표
+	float speed,           // 탄의 속도
+	float theta            // 선회 각도의 상한치
+	)
+{
+	// 탄의 원래 속도벡터를 저장
+	float vx0 = vx, vy0 = vy;
+
+	// 메인 캐릭터 방향으로의 속도 벡터(vx1, vy1)를 구하기
+	float vx1, vy1;
+	float d = sqrt((mx - x)*(mx - x) + (my - y)*(my - y));
+	if (d) {
+		vx1 = (mx - x) / d*speed;
+		vy1 = (my - y) / d*speed;
+	}
+	else {
+		vx1 = 0;
+		vy1 = speed;
+	}
+
+	// 시계방향으로 선회할 때의 상한 각도에 해당하는 속도벡터(vx2, vy2)를 구하기:
+	// M_PI는 원주율
+	float rad = 3.14f / 180 * theta;
+	float vx2 = cos(rad)*vx0 - sin(rad)*vy0;
+	float vy2 = sin(rad)*vx0 + cos(rad)*vy0;
+
+	// 메인 캐릭터 방향으로 선회할 지 제한각도만큼만 선회할 지 정하기
+	if (vx0*vx1 + vy0*vy1 >= vx0*vx2 + vy0*vy2) {
+
+		// 메인 캐릭터가 선회 가능한 범위 내에 있을 경우:
+		// 메인 캐릭터 방향으로 선회함
+		vx = vx1;
+		vy = vy1;
+
+	}
+	else {
+
+		// 메인 캐릭터가 선회 가능한 범위 밖에 있을 경우:
+		// 시계 반대방향으로 선회할 때의 상한 각도에 해당하는 속도벡터(vx3, vy3)를 구하기
+		float vx3 = cos(rad)*vx0 + sin(rad)*vy0;
+		float vy3 = -sin(rad)*vx0 + cos(rad)*vy0;
+
+		// 탄에서 메인 캐릭터까지의 상대위치벡터(px, py)를 구하기
+		float px = mx - x, py = my - y;
+
+		// 시계방향으로 선회할 지 시계 반대방향으로 선회할 지 정하기
+		if (px*vx2 + py*vy2 >= px*vx3 + py*vy3) {
+
+			// 시계방향일 경우
+			vx = vx2;
+			vy = vy2;
+
+		}
+		else {
+
+			// 시계 반대방향일 경우
+			vx = vx3;
+			vy = vy3;
+
+		}
+	}
+
+	// 탄의 좌표(x, y)를 갱신하여 탄을 이동시킴
+	x_pos += vx;
+	y_pos += vy;
+	}
 
 
 
@@ -538,6 +548,8 @@ Score score;
 Back backgr;
 Back backgr2;
 LPD3DXFONT FONT2;
+Enemy boss;
+
 
 
 
@@ -545,6 +557,8 @@ LPD3DXFONT FONT2;
 int reload;
 int reload_count;
 bool reload_flag;
+float vxx = 2.0f;
+float vyy = 2.0f;
 
 
 
@@ -767,6 +781,22 @@ void initD3D(HWND hWnd)
 		&sprite_score5);
 	//////////////////////////////////////////////////////////////////////
 
+	D3DXCreateTextureFromFileEx(d3ddev,    // the device pointer
+		"boss.png",    // the file name
+		D3DX_DEFAULT,    // default width
+		D3DX_DEFAULT,    // default height
+		D3DX_DEFAULT,    // no mip mapping
+		NULL,    // regular usage
+		D3DFMT_A8R8G8B8,    // 32-bit pixels with alpha
+		D3DPOOL_MANAGED,    // typical memory handling
+		D3DX_DEFAULT,    // no filtering
+		D3DX_DEFAULT,    // no mip filtering
+		D3DCOLOR_XRGB(255, 0, 255),    // the hot-pink color key
+		NULL,    // no image info struct
+		NULL,    // not using 256 colors
+		&sprite_boss);    // load to sprite
+
+
 
 	D3DXCreateTextureFromFileEx(d3ddev,   
 		"niva_neo_final2.png",  
@@ -938,6 +968,8 @@ void init_game(void)
 	{
 		bulletex[i].init(hero.x_pos+50, hero.y_pos-10);
 	}
+
+	boss.init(100,100);
 }
 
 
@@ -958,7 +990,7 @@ void do_game_logic(void)
 		hero.move(MOVE_RIGHT);
 
 	//주인공 충돌 처리
-	if (hero.show() == false)
+	/*if (hero.show() == false)
 	{
 		for (int i = 0; i < ENEMY_NUM; i++)
 		{
@@ -978,7 +1010,7 @@ void do_game_logic(void)
 			hero.hit_Show = false;
 
 		}
-	}
+	}*/
 
 	//적들 처리 
 	for (int i = 0; i < ENEMY_NUM; i++)
@@ -998,7 +1030,7 @@ void do_game_logic(void)
 	if (backgr2.x_pos + 1904 < 0)
 		backgr2.init(1904, 0);
 
-
+	boss.init(550, 150);
 
 	//총알 처리 
 
@@ -1044,7 +1076,8 @@ void do_game_logic(void)
 				if (bulletex[i].x_pos > SCREEN_WIDTH)
 					bulletex[i].hide();
 				else
-					bulletex[i].move();	
+					bulletex[i].homing(hero.x_pos, hero.y_pos,
+						vxx, vyy, 500, 220, 20.0f, 10.0f);
 			}
 
 			
@@ -1076,12 +1109,6 @@ void render_frame(void)
 
 	d3dspt->Begin(D3DXSPRITE_ALPHABLEND);  
 
-	char string[100];
-	RECT TextRt;
-	SetRect(&TextRt, 0, 0, 800, 600);
-	sprintf(string, " 장탄수   %d / 30  ", 30 - reload_count);
-	FONT2->DrawText(NULL, string, -1, &TextRt, DT_LEFT|DT_NOCLIP, 0xFFFFFFFF);
-	
 
 	RECT part3;
 	SetRect(&part3, 0, 0, 1904, 480);
@@ -1096,7 +1123,22 @@ void render_frame(void)
 	D3DXVECTOR3 position4(backgr2.x_pos, 0, 0.0f);    // position at 50, 50 with no depth
 	d3dspt->Draw(back2, &part4, &center1, &position4, D3DCOLOR_ARGB(255, 255, 255, 255));
 
+
+	RECT part8;
+	SetRect(&part8, 0, 0, 258, 130);
+	D3DXVECTOR3 center8(0, 0.0f, 0.0f);    // center at the upper-left corner
+	D3DXVECTOR3 position8(boss.x_pos, boss.y_pos, 0.0f);    // position at 50, 50 with no depth
+	d3dspt->Draw(sprite_boss, &part8, &center8, &position8, D3DCOLOR_ARGB(255, 255, 255, 255));
+
+
+	char string[100];
+	RECT TextRt;
+	SetRect(&TextRt, 0, 0, 800, 600);
+	sprintf(string, " 장탄수   %d / 30  ", 30 - reload_count);
+	FONT2->DrawText(NULL, string, -1, &TextRt, DT_LEFT|DT_NOCLIP, 0xFFFFFFFF);
+
 	
+
 
 	if (hero.hit_Show == false)
 	{											 //주인공 
@@ -1172,6 +1214,8 @@ void cleanD3D(void)
 
 	back->Release();
 	back->Release();
+
+	sprite_boss->Release();
 
 	FONT2->Release();
 
