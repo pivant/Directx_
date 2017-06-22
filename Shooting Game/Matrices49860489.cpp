@@ -1143,7 +1143,7 @@ void render_frame(void)
 	if (hero.hit_Show == false)
 	{											 //ÁÖÀÎ°ø 
 		RECT part;
-		SetRect(&part, 0, 0, 200, 150);
+		SetRect(&part, 0, 0, 130, 130);
 		D3DXVECTOR3 center(0.0f, 0.0f, 0.0f);    // center at the upper-left corner
 		D3DXVECTOR3 position(hero.x_pos, hero.y_pos, 0.0f);    // position at 50, 50 with no depth
 		d3dspt->Draw(sprite_hero, &part, &center, &position, D3DCOLOR_ARGB(255, 255, 255, 255));
