@@ -1,9 +1,9 @@
 ﻿  Matrices49860489.cpp
-d:\ddown\dx_game\shooting game\matrices49860489.cpp(569): warning C4100: 'lpCmdLine': 참조되지 않은 정식 매개 변수입니다.
-d:\ddown\dx_game\shooting game\matrices49860489.cpp(568): warning C4100: 'hPrevInstance': 참조되지 않은 정식 매개 변수입니다.
-d:\ddown\dx_game\shooting game\matrices49860489.cpp(960): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-d:\ddown\dx_game\shooting game\matrices49860489.cpp(1019): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-d:\ddown\dx_game\shooting game\matrices49860489.cpp(1092): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-d:\ddown\dx_game\shooting game\matrices49860489.cpp(1137): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\ddown\dx_game\shooting game\matrices49860489.cpp(575): warning C4100: 'lpCmdLine': 참조되지 않은 정식 매개 변수입니다.
+d:\ddown\dx_game\shooting game\matrices49860489.cpp(574): warning C4100: 'hPrevInstance': 참조되지 않은 정식 매개 변수입니다.
+d:\ddown\dx_game\shooting game\matrices49860489.cpp(966): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\ddown\dx_game\shooting game\matrices49860489.cpp(1036): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\ddown\dx_game\shooting game\matrices49860489.cpp(1113): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\ddown\dx_game\shooting game\matrices49860489.cpp(1160): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1769): note: 'sprintf' 선언을 참조하십시오.
   Matrices49860489_2010.vcxproj -> D:\ddown\DX_GAME\Shooting Game\Debug\Matrices49860489.exe

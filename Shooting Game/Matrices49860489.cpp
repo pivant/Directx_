@@ -183,7 +183,7 @@ bool Hero::check_collision(float x, float y)
 {
 
 	//충돌 처리 시 
-	if (sphere_collision_check(x_pos, y_pos, 32.0f, x, y, 32.0f) == true)
+	if (sphere_collision_check(x_pos, y_pos, 60.0f, x, y, 60.0f) == true)
 	{
 		hit_Show = true;
 		return true;
@@ -537,7 +537,6 @@ void Bullet2::hide()
 
 
 
-
 //객체 생성 
 Hero hero;
 Enemy enemy[ENEMY_NUM];
@@ -549,6 +548,13 @@ Back backgr;
 Back backgr2;
 LPD3DXFONT FONT2;
 Enemy boss;
+int boss_hp;
+bool killing;
+bool killing2;
+int damage;
+int damage2[];
+int heal[];
+int bosshe[30];
 
 
 
@@ -970,6 +976,17 @@ void init_game(void)
 	}
 
 	boss.init(100,100);
+
+	boss_hp = 30;
+	damage = 1;
+	killing = false;
+
+	for (int i = 0; i < 30; i++)
+	{
+		bosshe[i] = 1;
+	}
+
+	
 }
 
 
@@ -1029,8 +1046,9 @@ void do_game_logic(void)
 
 	if (backgr2.x_pos + 1904 < 0)
 		backgr2.init(1904, 0);
-
-	boss.init(550, 150);
+	
+	boss.init(550, 120);
+	
 
 	//총알 처리 
 
@@ -1076,8 +1094,9 @@ void do_game_logic(void)
 				if (bulletex[i].x_pos > SCREEN_WIDTH)
 					bulletex[i].hide();
 				else
-					bulletex[i].homing(hero.x_pos, hero.y_pos,
-						vxx, vyy, 500, 220, 20.0f, 10.0f);
+					bulletex[i].move();
+					/*bulletex[i].homing(hero.x_pos, hero.y_pos,
+						vxx, vyy, 500, 220, 20.0f, 10.0f);*/
 			}
 
 			
@@ -1087,14 +1106,18 @@ void do_game_logic(void)
 		//충돌 처리
 		for (int i = 0; i < ENEMY_NUM; i++)
 		{
-			if (bullet.check_collision(enemy[i].x_pos, enemy[i].y_pos) == true)
+			for (int j = 0; j < 30; j++)
 			{
-				enemy[i].init((float)(SCREEN_WIDTH + (rand() % 300)), rand() % SCREEN_HEIGHT);
+				if (bulletex[j].check_collision(enemy[i].x_pos, enemy[i].y_pos) == true)
+				{
+					enemy[i].init((float)(SCREEN_WIDTH + (rand() % 300)), rand() % SCREEN_HEIGHT);
+					boss_hp = boss_hp - damage;
+				}
+
 			}
 		}
-		
-		
 
+		
 }
 
 
@@ -1110,18 +1133,18 @@ void render_frame(void)
 	d3dspt->Begin(D3DXSPRITE_ALPHABLEND);  
 
 
-	RECT part3;
-	SetRect(&part3, 0, 0, 1904, 480);
-	D3DXVECTOR3 center1(0, 0.0f, 0.0f);    // center at the upper-left corner
-	D3DXVECTOR3 position3(backgr.x_pos, 0, 0.0f);    // position at 50, 50 with no depth
-	d3dspt->Draw(back, &part3, &center1, &position3, D3DCOLOR_ARGB(255, 255, 255, 255));
+	//RECT part3;
+	//SetRect(&part3, 0, 0, 1904, 480);
+	//D3DXVECTOR3 center1(0, 0.0f, 0.0f);    // center at the upper-left corner
+	//D3DXVECTOR3 position3(backgr.x_pos, 0, 0.0f);    // position at 50, 50 with no depth
+	//d3dspt->Draw(back, &part3, &center1, &position3, D3DCOLOR_ARGB(255, 255, 255, 255));
 
 
-	RECT part4;
-	SetRect(&part4, 0, 0, 1904, 480);
-	D3DXVECTOR3 center5(0, 0.0f, 0.0f);    // center at the upper-left corner
-	D3DXVECTOR3 position4(backgr2.x_pos, 0, 0.0f);    // position at 50, 50 with no depth
-	d3dspt->Draw(back2, &part4, &center1, &position4, D3DCOLOR_ARGB(255, 255, 255, 255));
+	//RECT part4;
+	//SetRect(&part4, 0, 0, 1904, 480);
+	//D3DXVECTOR3 center5(0, 0.0f, 0.0f);    // center at the upper-left corner
+	//D3DXVECTOR3 position4(backgr2.x_pos, 0, 0.0f);    // position at 50, 50 with no depth
+	//d3dspt->Draw(back2, &part4, &center1, &position4, D3DCOLOR_ARGB(255, 255, 255, 255));
 
 
 	RECT part8;
@@ -1134,9 +1157,15 @@ void render_frame(void)
 	char string[100];
 	RECT TextRt;
 	SetRect(&TextRt, 0, 0, 800, 600);
-	sprintf(string, " 장탄수   %d / 30  ", 30 - reload_count);
+	sprintf(string, " 보스체력   %d  ", boss_hp);
 	FONT2->DrawText(NULL, string, -1, &TextRt, DT_LEFT|DT_NOCLIP, 0xFFFFFFFF);
 
+	/*char string[100];
+	RECT TextRt;
+	SetRect(&TextRt, 0, 0, 800, 600);
+	sprintf(string, " 장탄수   %d / 30  ", 30 - reload_count);
+	FONT2->DrawText(NULL, string, -1, &TextRt, DT_LEFT | DT_NOCLIP, 0xFFFFFFFF);
+*/
 	
 
 
